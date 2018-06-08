@@ -3,6 +3,7 @@ import os
 from zone import *
 from yolo3 import *
 import cv2
+import time
 
 
 np.set_printoptions(threshold=np.nan)
@@ -148,8 +149,11 @@ def _main_(args):
     while success:
         print(count)
         if not (count % sample_factor):
+            start_time = time.time()
             image_processing(image,count,image_folder,net_h,
                              net_w,anchors, obj_thresh, nms_thresh,labels,yolov3,center_zone)
+            end_time = time.time()
+            print(end_time-start_time)
         success,image = vidcap.read()
         print('Read a new frame: ', success)
         count += 1

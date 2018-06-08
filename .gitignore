@@ -1,7 +1,9 @@
 image/
+image_2/
 .idea/
 .DS_Store
 *.mp4
 *.avi
 *.pyc
 *.weights
+.ipynb_checkpoints/
