@@ -1,5 +1,7 @@
 image/
 image_2/
+image_origin/
+tools/
 .idea/
 .DS_Store
 *.mp4
@@ -7,3 +9,5 @@ image_2/
 *.pyc
 *.weights
 .ipynb_checkpoints/
+
+
