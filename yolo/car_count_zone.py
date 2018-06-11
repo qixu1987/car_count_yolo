@@ -1,7 +1,8 @@
 import argparse
 import os
-from zone import *
-from yolo3 import *
+from yolos.zone import *
+from yolos.yolo3 import *
+from yolos.proc import *
 import cv2
 import time
 
@@ -123,7 +124,7 @@ def _main_(args):
               "remote", "keyboard", "cell phone", "microwave", "oven", "toaster", "sink", "refrigerator", \
               "book", "clock", "vase", "scissors", "teddy bear", "hair drier", "toothbrush"]
 
-    image_folder = "image"
+    image_folder = "../image"
 
     sig = 5
     c_y = 1

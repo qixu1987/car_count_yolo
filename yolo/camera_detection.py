@@ -1,8 +1,6 @@
 import cv2
-import numpy as np
-from zone import *
-from yolo3 import *
-import cv2
+from yolos.yolo3 import *
+from yolos.proc import *
 import time
 
 # Playing video from file:
