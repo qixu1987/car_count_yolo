@@ -185,3 +185,57 @@ def do_nms(box_array, nms_thresh,obj_thresh):
                     box_array_class.append( box_class_array)
     return box_array_class
 
+
+def count_car(image,box_array,labels,net_w,net_h,zone_list):
+    zone_stat = [[False,zone] for zone in zone_list]
+
+    for ind_class in range(len(labels)):
+        box_array_class =  box_array[ind_class]
+        if box_array_class.shape[0]:
+            for ind_col in range(box_array_class.shape[0]):
+                # conversion to image pixel position
+                pos_array = box_array_class[ind_col,0:4]
+                pos_array[[0,2]] = pos_array[[0,2]] * net_w
+                pos_array[[1,3]] = pos_array[[1,3]] * net_h
+
+                for zone_index in range(len(zone_stat)):
+                    if zone_stat[zone_index][1].center_in_zone_array(pos_array):
+                        zone_stat[zone_index][0] = True
+
+                cv2.rectangle(image, (int(pos_array[0]),
+                                      int(pos_array[1])),
+                              (int(pos_array[2]),
+                               int(pos_array[3])),
+                              (0,255,0), 1)
+                cv2.putText(image,
+                            labels[ind_class] + ' ' + "{:.3f}".format(box_array_class[ind_col,4]*100) + '%',
+                            (int(pos_array[0]),
+                             int(pos_array[1]) - 5),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            2e-3 * image.shape[0],
+                            (0,255,0), 1)
+        else:
+            continue
+
+    for zone_index in range(len(zone_stat)):
+        zone = zone_stat[zone_index][1]
+        zone.count_increment(zone_stat[zone_index][0])
+        cv2.rectangle(image, (zone.xmin,zone.ymin), (zone.xmax,zone.ymax), (255,0,0), 1)
+
+        cv2.putText(image,
+                        str(zone.count),
+                        (zone.xmin, zone.ymin - 5),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        2e-3 * image.shape[0],
+                        (255,0,0), 1)
+
+    cv2.putText(image,
+                "M2 Car nb: "+ str(sum([zone[1].count for zone in zone_stat])),
+                #(100, 250),
+                (10, 10),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                0.002 * image.shape[0],
+                (0,255,0), 1)
+    return image
+
+
