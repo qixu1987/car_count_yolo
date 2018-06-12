@@ -85,7 +85,9 @@ def image_processing(image,count,image_folder,net_h,
     new_image = preprocess_input(image, net_h, net_w)
 
     # run the prediction
+    start=time.time()
     yolos = yolov3.predict(new_image)
+    print(start - time.time())
     boxes = []
 
     for i in range(len(yolos)):
@@ -158,7 +160,9 @@ def _main_(args):
         success,image = vidcap.read()
         print('Read a new frame: ', success)
         count += 1
-
+        if count == 20:
+            break
+    """
     video_name = 'car_count.avi'
 
     images = {int(img.split('.')[0][5:]):img for img in os.listdir(image_folder) if img.endswith(".jpg")}
@@ -171,6 +175,7 @@ def _main_(args):
 
     cv2.destroyAllWindows()
     video.release()
+    """
 
 if __name__ == '__main__':
     args = argparser.parse_args()
