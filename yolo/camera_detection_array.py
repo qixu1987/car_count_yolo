@@ -94,4 +94,5 @@ while(True):
 cap.release()
 cv2.destroyAllWindows()
 
-
+image_ind_list = [0]
+app.run(host='127.0.0.1', debug=True)

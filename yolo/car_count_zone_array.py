@@ -3,6 +3,8 @@ from yolos.yolo3 import *
 from yolos.proc_hp import *
 from yolos.zone import *
 import time
+import os
+
 
 
 weights_path = "../yolov3.weights"
@@ -43,7 +45,8 @@ yolov3 = make_yolov3_model()
 weight_reader = WeightReader(weights_path)
 weight_reader.load_weights(yolov3)
 
-# image processing pipeline
+
+
 vidcap = cv2.VideoCapture(video_path)
 success, image = vidcap.read()
 image = image[116:308,116:308,:]
@@ -78,7 +81,12 @@ while success:
             box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
             new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
 
-        cv2.imwrite(image_folder + "/frame%d.jpg" % count, new_image_2*255.)
+        cv2.imwrite(image_folder + "/frame{}.jpg".format(count), new_image_2*255.)
+        #os.rename(image_folder + "/frame{}.jpg".format(count),image_folder + "/frame{}.jpg.done".format(count))
+        nb_buffet = 10
+        if count >= nb_buffet:
+            os.remove(image_folder + "/frame{}.jpg".format(count-nb_buffet))
+
 
     success,image = vidcap.read()
     image = image[116:308,116:308,:]
