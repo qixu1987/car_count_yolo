@@ -35,8 +35,8 @@ if class_list is None :
     class_list = labels
 class_ind,class_labels = class_to_ind(class_list,labels)
 
-zone_list =   [Zone(44,94,114,104),
-               Zone(114,94,184,104)]
+zone_list =   [Zone(15,125,85,135),
+               Zone(85,125,155,135)]
 
 # make the yolov3 model to predict 80 classes on COCO
 yolov3 = make_yolov3_model()

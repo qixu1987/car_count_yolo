@@ -227,7 +227,7 @@ def count_car(image,box_array,labels,net_w,net_h,zone_list):
                         (zone.xmin, zone.ymin - 5),
                         cv2.FONT_HERSHEY_SIMPLEX,
                         2e-3 * image.shape[0],
-                        (255,0,0), 1)
+                        (255,0,0), 2)
 
     cv2.putText(image,
                 "M2 Car nb: "+ str(sum([zone[1].count for zone in zone_stat])),
@@ -235,7 +235,7 @@ def count_car(image,box_array,labels,net_w,net_h,zone_list):
                 (10, 10),
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.002 * image.shape[0],
-                (0,255,0), 1)
+                (0,255,0), 2)
     return image
 
 
