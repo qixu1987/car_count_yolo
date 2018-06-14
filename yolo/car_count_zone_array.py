@@ -35,8 +35,8 @@ if class_list is None :
     class_list = labels
 class_ind,class_labels = class_to_ind(class_list,labels)
 
-zone_list =   [Zone(44,84,114,104),
-               Zone(114,84,184,104)]
+zone_list =   [Zone(44,94,114,104),
+               Zone(114,94,184,104)]
 
 # make the yolov3 model to predict 80 classes on COCO
 yolov3 = make_yolov3_model()
@@ -81,11 +81,11 @@ while success:
             box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
             new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
 
-        cv2.imwrite(image_folder + "/frame{}.jpg".format(count), new_image_2*255.)
-        #os.rename(image_folder + "/frame{}.jpg".format(count),image_folder + "/frame{}.jpg.done".format(count))
-        nb_buffet = 10
-        if count >= nb_buffet:
-            os.remove(image_folder + "/frame{}.jpg".format(count-nb_buffet))
+        cv2.imwrite(image_folder + "/frame.jpg".format(count), new_image_2*255.)
+        os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
+        #nb_buffet = 100
+        #if count >= nb_buffet:
+        #    os.remove(image_folder + "/frame.jpg".format(count-nb_buffet))
 
 
     success,image = vidcap.read()
