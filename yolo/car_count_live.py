@@ -60,7 +60,6 @@ while success:
     start1 = time.time()
     if not (count % sample_factor):
         # Handles the mirroring of the current frame
-
         image_h, image_w, _ = image.shape
         new_image = preprocess_input(image, net_h, net_w)
 
@@ -81,10 +80,11 @@ while success:
         new_image_2 = new_image.reshape(net_h,net_w,3)
         if box_array.shape[0]:
             box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
+            print(box_array_list)
             new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
 
-        cv2.imwrite(image_folder + "/frame.jpg".format(count), new_image_2*255.)
-        os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
+        cv2.imwrite(image_folder + "/frame{}.jpg".format(count), new_image_2*255.)
+        #os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
         #nb_buffet = 100
         #if count >= nb_buffet:
         #    os.remove(image_folder + "/frame.jpg".format(count-nb_buffet))

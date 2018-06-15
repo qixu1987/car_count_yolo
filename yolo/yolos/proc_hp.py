@@ -180,7 +180,7 @@ def do_nms(box_array, nms_thresh,obj_thresh):
                         if bbox_iou(box_class_array,row1, row2) >= nms_thresh:
                             delete_list.append(row2)
                 if len(delete_list):
-                    box_array_class.append( np.delete(box_class_array,sorted_indices[delete_list],0))
+                    box_array_class.append( np.delete(box_class_array,delete_list,0))
                 else:
                     box_array_class.append( box_class_array)
     return box_array_class
