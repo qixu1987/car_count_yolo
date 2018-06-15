@@ -171,7 +171,7 @@ def do_nms(box_array, nms_thresh,obj_thresh):
                 box_array_class.append(np.array([]))
             else:
                 delete_list=[]
-                sorted_indices = np.argsort(box_class_array[:,4])
+                sorted_indices = np.argsort(box_class_array[:,4])[::-1]
                 for i in range(len(sorted_indices)):
                     row1 = sorted_indices[i]
                     if row1 in delete_list: continue
