@@ -44,53 +44,56 @@ weight_reader.load_weights(yolov3)
 
 
 
-url = "rtsp://admin:engie@86.67.73.xx:8082/live/ch0"
+url = "rtsp://admin:engie@86.67.73.30:8082/live/ch0"
 vidcap = cv2.VideoCapture(url,cv2.CAP_FFMPEG)
-
+vidcap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 success, image = vidcap.read()
-image = image[440:600,780:940,:]
+image = image[420:580,720:880,:]
 count = 0
 success = True
 sample_factor = 1
 while success:
-    print(count)
-    start1 = time.time()
-    if not (count % sample_factor):
-        # Handles the mirroring of the current frame
+    try:
+        print(count)
+        start1 = time.time()
+        if not (count % sample_factor):
+            # Handles the mirroring of the current frame
 
-        image_h, image_w, _ = image.shape
-        new_image = preprocess_input(image, net_h, net_w)
+            image_h, image_w, _ = image.shape
+            new_image = preprocess_input(image, net_h, net_w)
 
-        # run the prediction
-        start = time.time()
-        yolos = yolov3.predict(new_image)
-        print(start - time.time())
+            # run the prediction
+            start = time.time()
+            yolos = yolov3.predict(new_image)
+            print(start - time.time())
 
-        box_array =  np.array([]).reshape(0,(4+len(class_list)))
-        for ind_model in range(nb_models):
-            box_array = np.concatenate((box_array,
-                                        decode_netout_mat(yolos[ind_model][0],
-                                                          anchors[ind_model], obj_thresh,
-                                                          nms_thresh, net_h, net_w,raw_col_list[ind_model],
-                                                          class_ind,pos_array[ind_model]))
-                                       )
+            box_array =  np.array([]).reshape(0,(4+len(class_list)))
+            for ind_model in range(nb_models):
+                box_array = np.concatenate((box_array,
+                                            decode_netout_mat(yolos[ind_model][0],
+                                                              anchors[ind_model], obj_thresh,
+                                                              nms_thresh, net_h, net_w,raw_col_list[ind_model],
+                                                              class_ind,pos_array[ind_model]))
+                                           )
 
-        new_image_2 = new_image.reshape(net_h,net_w,3)
-        box_array_list=[]
-        if box_array.shape[0]:
-            box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
-        new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
+            new_image_2 = new_image.reshape(net_h,net_w,3)
+            box_array_list=[]
+            if box_array.shape[0]:
+                box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
+            new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
 
-        cv2.imwrite(image_folder + "/frame.jpg".format(count), new_image_2*255.)
-        os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
-        #nb_buffet = 100
-        #if count >= nb_buffet:
-        #    os.remove(image_folder + "/frame.jpg".format(count-nb_buffet))
+            cv2.imwrite(image_folder + "/frame.jpg".format(count), new_image_2*255.)
+            os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
+            #nb_buffet = 100
+            #if count >= nb_buffet:
+            #    os.remove(image_folder + "/frame.jpg".format(count-nb_buffet))
 
 
-    success,image = vidcap.read()
-    image = image[420:580,780:940,:]
-    print(start1 - time.time())
-    print('Read a new frame: ', success)
-    count += 1
+        success,image = vidcap.read()
+        image = image[420:580,720:880,:]
+        print(start1 - time.time())
+        print('Read a new frame: ', success)
+        count += 1
+    except:
+        continue
 
