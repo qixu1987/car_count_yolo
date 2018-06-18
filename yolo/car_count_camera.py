@@ -10,7 +10,7 @@ weights_path = "../yolov3.weights"
 image_folder = "../image"
 
 # set some parameters
-net_h, net_w = 224, 224
+net_h, net_w = 288, 288
 nb_box =3
 nb_models = 3
 obj_thresh, nms_thresh = 0.5, 0.2
@@ -33,7 +33,7 @@ if class_list is None :
     class_list = labels
 class_ind,class_labels = class_to_ind(class_list,labels)
 
-zone_list =   [Zone(70,10,90,210)]
+zone_list =   [Zone(130,30,160,240)]
 
 # make the yolov3 model to predict 80 classes on COCO
 yolov3 = make_yolov3_model()
@@ -48,7 +48,7 @@ url = "rtsp://admin:engie@86.67.73.xx:8082/live/ch0"
 vidcap = cv2.VideoCapture(url,cv2.CAP_FFMPEG)
 vidcap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 success, image = vidcap.read()
-image = image[388:612,688:912,:]
+image = image[356:644,656:944,:]
 count = 0
 success = True
 sample_factor = 2
@@ -91,7 +91,7 @@ while success:
         success,image = vidcap.read()
     except:
         print("catch")
-    image = image[420:580,720:880,:]
+    image = image[356:644,656:944,:]
     print(start1 - time.time())
     print('Read a new frame: ', success)
     count += 1
