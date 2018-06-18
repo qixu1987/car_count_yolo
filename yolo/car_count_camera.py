@@ -33,7 +33,7 @@ if class_list is None :
     class_list = labels
 class_ind,class_labels = class_to_ind(class_list,labels)
 
-zone_list =   [Zone(75,30,85,150)]
+zone_list =   [Zone(70,10,90,150)]
 
 # make the yolov3 model to predict 80 classes on COCO
 yolov3 = make_yolov3_model()
@@ -76,9 +76,10 @@ while success:
                                        )
 
         new_image_2 = new_image.reshape(net_h,net_w,3)
+        box_array_list=[]
         if box_array.shape[0]:
             box_array_list = do_nms(box_array, nms_thresh,obj_thresh)
-            new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
+        new_image_2 = count_car(new_image_2,box_array_list,class_labels,net_w,net_h,zone_list)
 
         cv2.imwrite(image_folder + "/frame.jpg".format(count), new_image_2*255.)
         os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
