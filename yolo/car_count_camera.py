@@ -33,7 +33,7 @@ if class_list is None :
     class_list = labels
 class_ind,class_labels = class_to_ind(class_list,labels)
 
-zone_list =   [Zone(130,30,160,240)]
+zone_list =   [Zone(120,80,160,180)]
 
 # make the yolov3 model to predict 80 classes on COCO
 yolov3 = make_yolov3_model()
@@ -48,7 +48,7 @@ url = "rtsp://admin:engie@86.67.73.xx:8082/live/ch0"
 vidcap = cv2.VideoCapture(url,cv2.CAP_FFMPEG)
 vidcap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 success, image = vidcap.read()
-image = image[356:644,656:944,:]
+image = image[256:544,656:944,:]
 count = 0
 success = True
 sample_factor = 2
@@ -91,7 +91,7 @@ while success:
         success,image = vidcap.read()
     except:
         print("catch")
-    image = image[356:644,656:944,:]
+    image = image[256:544,656:944,:]
     print(start1 - time.time())
     print('Read a new frame: ', success)
     count += 1
