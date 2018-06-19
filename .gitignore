@@ -1,4 +1,4 @@
-image/
+image/*
 image_origin/
 tools/
 .idea/
@@ -8,5 +8,7 @@ tools/
 *.pyc
 *.weights
 .ipynb_checkpoints/
+depreciated/
 
 
+!image/.gitkeep

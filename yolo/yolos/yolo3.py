@@ -1,9 +1,9 @@
+""" yolo3 keras implementation: https://github.com/experiencor/keras-yolo3"""
 import numpy as np
 from keras.layers import Conv2D, Input, BatchNormalization, LeakyReLU, ZeroPadding2D, UpSampling2D
 from keras.layers.merge import add, concatenate
 from keras.models import Model
 import struct
-
 
 # model creation
 def _conv_block(inp, convs, skip=True):
@@ -26,7 +26,6 @@ def _conv_block(inp, convs, skip=True):
         if conv['leaky']: x = LeakyReLU(alpha=0.1, name='leaky_' + str(conv['layer_idx']))(x)
 
     return add([skip_connection, x]) if skip else x
-
 
 def make_yolov3_model():
     input_image = Input(shape=(None, None, 3))

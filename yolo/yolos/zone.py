@@ -1,18 +1,16 @@
+"""class of detection zone """
 class Zone:
-    """
-    detection zone
-    """
     def __init__(self,xmin,ymin,xmax,ymax,count=0):
         self.ymin = ymin
         self.ymax = ymax
         self.xmin = xmin
         self.xmax = xmax
-        self.count =  count
+        self.count =  count # nb of object passed through the zone
         self.active = False
 
     def count_increment(self,in_zone):
         """
-        :param in_zone:
+        :param in_zone
         :return:
         """
         if (not self.active) and in_zone: # zone pass from inactive to active
@@ -21,18 +19,18 @@ class Zone:
 
     def zone_in_box(self,box):
         """
-        if the zone contains in a box
-        :param box:
-        :return:
+        if the zone contained in a box
+        :param box
+        :return:boolean
         """
         return (box.xmin < self.xmin) and (box.ymin < self.ymin) and (box.xmax > self.xmax) \
                 and (box.ymax > self.ymax)
 
     def center_in_zone(self,box):
         """
-        if a box center is in zone
-        :param box:
-        :return:
+        if a box center is in the zone
+        :param box
+        :return:boolean
         """
         box_x = (box.xmin + box.xmax)/2
         box_y = (box.ymin + box.ymax)/2
@@ -42,8 +40,8 @@ class Zone:
     def center_in_zone_array(self,pos_array):
         """
         if a box center is in zone
-        :param pos_array:
-        :return:
+        :param pos_array
+        :return:boolean
         """
         x = (pos_array[0] + pos_array[2])/2
         y = (pos_array[1] + pos_array[3])/2
