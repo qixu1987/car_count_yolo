@@ -3,6 +3,7 @@ import argparse
 import cv2
 from .yolos.yolo3 import *
 from .yolos.proc_hp import *
+from .utils.json_process import load_json
 import time
 
 
@@ -14,30 +15,28 @@ argparser.add_argument(
     '--weights',
     help='path to weights file')
 
+argparser.add_argument(
+    '-j',
+    '--json',
+    help='json config address')
+
 
 def _main_(args):
+    # set some parameters
     weights_path = args.weights
+    json_name = args.json
+    param_dic = load_json(json_name)
     # set some parameters see yolos doc for more information
-    net_h, net_w = 224, 224
-    nb_box =3
-    nb_models = 3
-    obj_thresh, nms_thresh = 0.5, 0.2
-    anchors = [[116,90,  156,198,  373,326],  [30,61, 62,45,  59,119], [10,13,  16,30,  33,23]]
-    labels = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck",
-              "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench",
-              "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe",
-              "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard",
-              "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-              "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl",
-              "banana","apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza",
-              "donut", "cake", "chair", "sofa", "pottedplant", "bed", "diningtable", "toilet",
-              "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave",
-              "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"]
+    net_h, net_w = param_dic["net_h"], param_dic["net_w"]
+    obj_thresh, nms_thresh = param_dic["obj_thresh"], param_dic["nms_thresh"]
+    anchors = param_dic["anchors"]
+    labels = param_dic["labels"]
+    nb_models = param_dic["nb_models"]
+    nb_box = param_dic["nb_box"]
+    factor = param_dic["factor_sampling"]
 
     # make the yolov3 model to predict 80 classes on COCO
     yolov3 = make_yolov3_model()
-
     # load the weights trained on COCO into the model
     weight_reader = WeightReader(weights_path)
     weight_reader.load_weights(yolov3)
@@ -56,7 +55,6 @@ def _main_(args):
         # Capture frame-by-frame
         count = 1
         ret, frame = cap.read()
-        factor = 3 # sampling factor
         while not (count % factor):
             ret, frame = cap.read()
             count = count+1
