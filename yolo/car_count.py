@@ -7,6 +7,7 @@ import cv2
 from .yolos.yolo3 import *
 from .yolos.proc_hp import *
 from .yolos.zone import *
+from .utils.json_process import load_json
 import time
 import os
 
@@ -33,38 +34,38 @@ argparser.add_argument(
     '--url',
     help='url of video flow')
 
+argparser.add_argument(
+    '-j',
+    '--json',
+    help='json config address')
+
 
 def _main_(args):
     weights_path = args.weights
     image_folder = args.image
     video_path = args.video
     url = args.url
+    json_name = args.json
 
     # set some parameters
-    net_h, net_w = 192, 192
-    nb_box =3
-    nb_models = 3
-    obj_thresh, nms_thresh = 0.5, 0.2
-    anchors = [[116,90,  156,198,  373,326],  [30,61, 62,45,  59,119], [10,13,  16,30,  33,23]]
-    labels = ["person", "bicycle", "car", "motorbike", "aeroplane", "bus", "train", "truck",
-              "boat", "traffic light", "fire hydrant", "stop sign", "parking meter", "bench",
-              "bird", "cat", "dog", "horse", "sheep", "cow", "elephant", "bear", "zebra", "giraffe",
-              "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee", "skis", "snowboard",
-              "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-              "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl",
-              "banana","apple", "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza",
-              "donut", "cake", "chair", "sofa", "pottedplant", "bed", "diningtable", "toilet",
-              "tvmonitor", "laptop", "mouse", "remote", "keyboard", "cell phone", "microwave",
-              "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors",
-              "teddy bear", "hair drier", "toothbrush"]
+    param_dic = load_json(json_name)
+    # set some parameters see yolos doc for more information
+    net_h, net_w = param_dic["net_h"], param_dic["net_w"]
+    obj_thresh, nms_thresh = param_dic["obj_thresh"], param_dic["nms_thresh"]
+    anchors = param_dic["anchors"]
+    labels = param_dic["labels"]
+    nb_models = param_dic["nb_models"]
+    nb_box = param_dic["nb_box"]
+    sample_factor = param_dic["factor_sampling"]
+    class_list = param_dic["detection_class"]
+    detect_zone = param_dic["detection_zone"]
 
     ### here starts the recode part
     pos_array,raw_col_list = postion_array(net_h, net_w,anchors,nb_box,nb_models)
-    class_list =["person", "bicycle", "car", "motorbike", "bus", "truck"]
     if class_list is None :
         class_list = labels
     class_ind,class_labels = class_to_ind(class_list,labels)
-    zone_list =  [Zone(15,125,85,135),Zone(85,125,155,135)]
+    zone_list =  [Zone(*pos) for pos in param_dic["count_zone_config"]]
 
     # make the yolov3 model to predict 80 classes on COCO
     yolov3 = make_yolov3_model()
@@ -78,10 +79,9 @@ def _main_(args):
         vidcap = cv2.VideoCapture(url,cv2.CAP_FFMPEG)
         vidcap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
     success, image = vidcap.read()
-    image = image[116:308,116:308,:]
+    image = image[detect_zone[0]:detect_zone[1],detect_zone[0]:detect_zone[1],:]
     count = 0
     success = True
-    sample_factor = 1
     while success:
         print(count)
         start1 = time.time()
@@ -113,7 +113,7 @@ def _main_(args):
             os.rename(image_folder + "/frame.jpg".format(count),image_folder + "/frame.jpg.done".format(count))
 
         success,image = vidcap.read()
-        image = image[116:308,116:308,:]
+        image = image[detect_zone[0]:detect_zone[1],detect_zone[0]:detect_zone[1],:]
         print(start1 - time.time())
         print('Read a new frame: ', success)
         count += 1
